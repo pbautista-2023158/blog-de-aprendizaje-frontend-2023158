@@ -1,26 +1,39 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:2636/api", 
-  timeout: 2000
-});
+  baseURL: 'http://localhost:2636/api',
+  timeout: 3000
+})
 
-// POST endpoints
-export const createPost = (data) => apiClient.post("/posts/addPost", data);
-export const getAllPosts = () => apiClient.get("/posts/getAllPosts");
-export const getPostsByCourse = (course) =>
-  apiClient.get("/posts/getPostsByCourse", { params: { course } });
+export const getPostsRequest = async () => {
+  try {
+    return await apiClient.get('/posts/getAllPosts')
+  } catch (err) {
+    return {
+      error: true,
+      err
+    }
+  }
+}
 
-// COMMENT endpoints
-export const createComment = (data) => apiClient.post("/comments/addComment", data);
-export const getCommentsByPost = async (postId) => {
-  const post = await getPostById(postId);
-  return { data: { comments: post.data.post.comments } };
-};
+export const getPostsByCourseRequest = async (course) => {
+  try {
+    return await apiClient.get(`/posts/getPostsByCourse?course=${course}`)
+  } catch (err) {
+    return {
+      error: true,
+      err
+    }
+  }
+}
 
-export const getPostById = (id) => apiClient.get(`/posts/getAllPosts`)
-  .then(res => {
-    const post = res.data.posts.find(p => p._id === id);
-    if (!post) throw new Error("No encontrado");
-    return { data: { post } };
-  });
+export const addCommentRequest = async (data) => {
+  try {
+    return await apiClient.post('/comments/addComment', data)
+  } catch (err) {
+    return {
+      error: true,
+      err
+    }
+  }
+}

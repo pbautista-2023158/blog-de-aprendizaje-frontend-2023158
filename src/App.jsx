@@ -1,15 +1,16 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home.jsx";
-import "./Index.css";
+import { Routes, Route } from 'react-router-dom'
+import { MainPage } from './pages/MainPage'
+import PostDetail from './pages/PostDetail'
 
 function App() {
   return (
-    <Router>
+    <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/post/:id" element={<PostDetail />} />
       </Routes>
-    </Router>
-  );
+    </>
+  )
 }
 
-export default App;
+export default App

@@ -1,48 +1,60 @@
-import { useState } from "react";
-import { createComment } from "../services/api";
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-export default function CommentForm({ postId, onCommentAdded }) {
-  const [form, setForm] = useState({ author: "", content: "" });
-  const [error, setError] = useState(null);
+export default function CommentForm({ onSubmit }) {
+  const [author, setAuthor] = useState('')
+  const [content, setContent] = useState('')
+  const navigate = useNavigate()
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setError(null);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.author || !form.content) {
-      return setError("Completa todos los campos.");
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!author.trim() || !content.trim()) {
+      return alert('Por favor completa todos los campos.')
     }
+    onSubmit({ author, content })
+    setAuthor('')
+    setContent('')
+  }
 
-    try {
-      await createComment({ ...form, post: postId });
-      setForm({ author: "", content: "" });
-      onCommentAdded(); // Recarga comentarios
-    } catch (err) {
-      setError("Hubo un error al enviar el comentario.");
-    }
-  };
+  const handleSalir = () => {
+    navigate('/')
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="comment-form">
-      <h4>Agregar un comentario</h4>
-      {error && <p className="error">{error}</p>}
-      <input
-        type="text"
-        name="author"
-        placeholder="Tu nombre"
-        value={form.author}
-        onChange={handleChange}
-      />
-      <textarea
-        name="content"
-        placeholder="Escribe tu comentario..."
-        value={form.content}
-        onChange={handleChange}
-      />
-      <button type="submit">Comentar</button>
+    <form onSubmit={handleSubmit}>
+
+      <div className="mb-3">
+        <label htmlFor="author" className="form-label">Nombre</label>
+        <input
+          type="text"
+          id="author"
+          className="form-control"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="content" className="form-label">Comentario</label>
+        <textarea
+          id="content"
+          className="form-control"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+        ></textarea>
+      </div>
+
+      <div className="d-flex justify-content-end gap-2">
+        <button type="button" className="btn btn-primary" onClick={handleSalir}>
+          Salir
+        </button>
+        <button type="submit" className="btn btn-primary">
+          Enviar Comentario
+        </button>
+      </div>
+
     </form>
-  );
+  )
 }
